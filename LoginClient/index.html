@@ -1,0 +1,35 @@
+<html>
+Server
+<div id="content">
+	<div id="Login">
+		<form name="LoginForm">
+			<input type="text" name="usrn"><br>
+			<input type="text" name="pswd"><br>
+			<input type="button" value="Login" onclick="AttemptLogin()"><br>
+		</form>
+	</div>
+</div>
+<script src="/socket.io/socket.io.js"></script>
+<script src="/LoginClient/test.js"></script>
+<script>
+	var socket = io();
+	var h;
+	function AttemptLogin()
+	{
+		var username = document.LoginForm.usrn.value;
+		var password = document.LoginForm.pswd.value;
+		
+		socket.emit('Login', username, password);
+	}
+	function ab2str(buf) { // http://stackoverflow.com/questions/6965107/converting-between-strings-and-arraybuffers
+		return String.fromCharCode.apply(null, new Uint8Array(buf));
+	}
+	socket.on('gameClient', function(clientContent)
+	{
+		console.log('received game client');
+		document.open();
+		document.write(ab2str(clientContent));
+		document.close();
+	});
+</script>
+</html>

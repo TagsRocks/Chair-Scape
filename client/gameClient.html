@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html>
+<title>TurdScape</title>
+<head>
+
+
+
+<style>
+	body {
+		background-color: #ffffff;
+		margin: 0;
+		overflow: hidden;
+		font-family: arial;
+	}
+	#blocker {
+
+		position: absolute;
+
+		width: 100%;
+		height: 100%;
+
+		background-color: rgba(0,0,0,0.5);
+
+	}
+
+	#instructions {
+
+		width: 100%;
+		height: 100%;
+
+		display: -webkit-box;
+		display: -moz-box;
+		display: box;
+
+		-webkit-box-orient: horizontal;
+		-moz-box-orient: horizontal;
+		box-orient: horizontal;
+
+		-webkit-box-pack: center;
+		-moz-box-pack: center;
+		box-pack: center;
+
+		-webkit-box-align: center;
+		-moz-box-align: center;
+		box-align: center;
+
+		color: #ffffff;
+		text-align: center;
+
+		cursor: pointer;
+
+	}
+	.info p {
+		margin:0 0 .2em;
+	}
+	
+	
+	
+	
+	table.ChatBox {
+		position:absolute;
+		bottom:5%;
+		left:25%;
+		width:50%;
+		height:15%;
+		z-index:10000;
+		background-color:rgba(0,0,0,0.5);
+		color:#FFFFFF;
+	}
+	table.RClickBox {
+		position:absolute;
+		bottom:55%;
+		left:25%;
+		width:1%;
+		height:1%;
+		z-index:10000;
+		background-color:rgba(0,0,0,0.5);
+		border-spacing:0px;
+		border:0px;
+		padding:4px;
+	}
+	tr td.PlayerText {
+		text-align: left;
+		float:left;
+		width:1%;
+		white-space:nowrap;
+	}
+	tr td.PlayerName {
+		text-align: left;
+		float:left;
+		white-space:nowrap;
+	}
+	tr td.RClickAction {
+		text-align: left;
+		background-color:rgba(125,125,125,0);
+		color:#FFFFFF;
+		border-spacing:0px;
+		border:0;
+		padding:0;
+	}
+	td.RClickAction:hover {
+		background-color:rgba(225,225,225,0.5) !important;
+	}
+	input.ChatEntry {
+		position:absolute;
+		bottom:1%;
+		left:25%;
+		width:46%;
+		height:3%;
+		z-index:10000;
+		background-color:rgba(0,0,0,0.5);
+		color:#FFFFFF;
+	}
+	input.ChatSubmit {
+		position:absolute;
+		bottom:1%;
+		left:71%;
+		width:4%;
+		height:4%;
+		z-index:10000;
+		background-color:rgba(0,0,0,0.5);
+		color:#FFFFFF;
+	}
+	
+	select.InventoryMain {
+		position:absolute;
+		bottom:5%;
+		left:77.5%;
+		width:20%;
+		height:35%;
+		z-index:10000;
+		background-color:rgba(0,0,0,0.5);
+		color:#FFFFFF;
+	}
+	
+	button.InvDrpBtn {
+		position:absolute;
+		bottom:1%;
+		left:77.5%;
+		width:4%;
+		height:4%;
+		z-index:10000;
+		background-color:rgba(0,0,0,0.5);
+		color:#FFFFFF;
+	}
+	
+</style>
+
+
+<div id ="inventorydiv">
+	<select id="inventorylistbox" name="inventorybox" class="InventoryMain" size="10">
+		<option value="slot1"></option>
+		<option value="slot2"></option>
+		<option value="slot3"></option>
+		<option value="slot4"></option>
+		<option value="slot5"></option>
+		<option value="slot6"></option>
+		<option value="slot7"></option>
+		<option value="slot8"></option>
+		<option value="slot9"></option>
+		<option value="slot10"></option>
+	</select>
+	<button type="button" class="InvDrpBtn" onclick="LocalPly.inventory.dropSelected();">Drop</button>
+</div>
+
+
+<div id="chatdiv" style="display:none;">
+	<table id="ChatTable" class="ChatBox">
+		<tr>
+			<td name="name5" class="PlayerName">John:</td>
+			<td name="text5" class="PlayerText">Text</td>
+		</tr>
+		<tr>
+			<td name="name4" class="PlayerName">Rob:</td>
+			<td name="text4" class="PlayerText">Text</td>
+		</tr>
+		<tr>
+			<td name="name3" class="PlayerName">Bob:</td>
+			<td name="text3" class="PlayerText">Text</td>
+		</tr>
+		<tr>
+			<td name="name2" class="PlayerName">Bill:</td>
+			<td name="text2" class="PlayerText">Text</td>
+		</tr>
+		<tr>
+			<td name="name1" class="PlayerName">Johnathon McBobSteve:</td>
+			<td name="text1" class="PlayerText">Text</td>
+		</tr>
+	</table>
+
+	<form name="chat" onSubmit="return false;">
+		<input class="ChatEntry" type="text" name="chatinput">
+		<input class="ChatSubmit" type="submit" onclick="SendChatMessage()">
+	</form>
+</div>
+
+<div id="rightclick">
+	<table id="RightClickTable" class="RClickBox">
+		<tr>
+			<td name="action1" class="RClickAction" onclick="LocalPly.rightclick.Options[0].Action();">Action1</td>
+		</tr>
+		<tr>
+			<td name="action2" class="RClickAction" onclick="LocalPly.rightclick.Options[1].Action();">Action2</td>
+		</tr>
+		<tr>
+			<td name="action3" class="RClickAction" onclick="LocalPly.rightclick.Options[2].Action();">Action3</td>
+		</tr>
+		<tr>
+			<td name="action4" class="RClickAction" onclick="LocalPly.rightclick.Options[3].Action();">Action4</td>
+		</tr>
+		<tr>
+			<td name="cancel" class="RClickAction">Cancel</td>
+		</tr>
+	</table>
+</div>
+
+<meta charset="utf-8">
+
+<script type="application/x-glsl" id="vert01">
+varying vec2 vUv;
+
+varying vec4 vPos;
+varying vec3 vNormal;
+void main()
+{
+    vUv = uv;
+	vNormal = normal;
+	gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0);
+}
+</script>
+
+<script type="application/x-glsl" id="frag01">
+
+uniform sampler2D t0;
+uniform sampler2D t1;
+uniform sampler2D blendMap;
+uniform float repeat;
+uniform float color;
+varying vec2 vUv;
+uniform vec3 vpos;
+
+varying vec4 vPos;
+varying vec3 vNormal;
+
+uniform vec3 pointLightColor[MAX_POINT_LIGHTS];
+uniform vec3 pointLightPosition[MAX_POINT_LIGHTS];
+uniform float pointLightDistance[MAX_POINT_LIGHTS];
+
+void main(void)
+{
+    vec3 c;
+    vec4 Ca = texture2D(t0, vUv * repeat);
+    vec4 Cb = texture2D(t1, vUv * repeat);
+	vec4 b = texture2D(blendMap, vUv);
+	c = mix(Ca.rgb, Cb.rgb, b.r);
+	
+	
+    gl_FragColor = vec4(c, 1.0);
+}
+</script>
+
+<script src="/client/js/rStats.js"></script>
+<script src="/client/js/rStats.extras.js"></script>
+<script src="/client/js/threex.rendererstats.js"></script>
+<script src="/client/js/RequestAnimationFrame.js"></script>
+<script src="/client/js/three.min.js"></script>
+<script src="/client/js/TerrainSlice.js"></script>
+<script src="/client/js/ModelManager.js"></script>
+<script src="/client/js/model.js"></script>
+<script src="/client/js/trigger.js"></script>
+<script src="/client/js/World_Items_Manager.js"></script>
+<script src="/client/js/Inventory.js"></script>
+<script src="/client/js/RightClick.js"></script>
+<script src="/client/js/Chat.js"></script>
+<script src="/client/js/NetworkPlayer.js"></script>
+<script src="/client/js/NetworkPlayerManager.js"></script>
+<script src="/client/js/OrbitControls.js"></script>
+<script src="/client/js/KeyboardState.js"></script>
+<script src="/client/js/LocalPlayer.js"></script>
+<script src="/client/js/THREEx.FullScreen.js"></script>
+<script src="/client/js/THREEx.WindowResize.js"></script>
+<script src="/client/js/Detector.js"></script>
+
+<div id="container"></div>
+
+<body>
+<div id="game" name="game" style="display:none;">
+<script type="text/javascript">
+
+if ( ! Detector.webgl ) 
+{
+	Detector.addGetWebGLMessage();
+}
+var container;
+var rS;
+var camera, scene, renderer, controls, objects;
+var Down = new THREE.Vector3(0,-1,0);
+var intersects;	
+var initialised = false;
+var paused = true;
+
+var LocalPly;
+			
+function containz(arr,obj) {
+    return (arr.indexOf(obj) != -1);
+}
+var ext = '.js';
+
+var landmodels = '/client/content/models/land/land';
+
+var TerrainSlices = [];
+for(var i = 0;i<99;i++) { TerrainSlices[i] = new TerrainSlice(); TerrainSlices[i].loaded = false; }
+var Land = [];
+var LandLoaded = [];
+function loadScript(url, callback){
+
+    var script = document.createElement("script")
+    script.type = "text/javascript";
+
+    if (script.readyState){  //IE
+        script.onreadystatechange = function(){
+            if (script.readyState == "loaded" ||
+                    script.readyState == "complete"){
+                script.onreadystatechange = null;
+                callback();
+            }
+        };
+    } else {  //Others
+        script.onload = function(){
+            callback();
+        };
+    }
+
+    script.src = url;
+    document.getElementsByTagName("head")[0].appendChild(script);
+}
+
+
+function ImageLoad(str)
+{
+		var img = THREE.ImageUtils.loadTexture("/client/content/textures/"+str);
+		return img;
+};
+
+var offset = new THREE.Vector3(0,400,0);
+function createBoxBrushS(scale, pos, texture, tscale, tshine, tfog)
+{
+	var geometry = new THREE.BoxGeometry(scale.x, scale.y, scale.z);
+	
+	var tex = THREE.ImageUtils.loadTexture( 'content/textures/'+texture+'.jpg');
+	tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+	tex.repeat.set( tscale.x, tscale.y );
+	tex.needsUpdate = true;
+	var disp = THREE.ImageUtils.loadTexture( 'content/textures/'+texture+'_disp.jpg');
+	disp.wrapS = disp.wrapT = THREE.RepeatWrapping;
+	disp.repeat.set( tscale.x, tscale.y );
+	var norm = THREE.ImageUtils.loadTexture( 'content/textures/'+texture+'_norm.jpg');
+	norm.wrapS = norm.wrapT = THREE.RepeatWrapping;
+	norm.repeat.set( tscale.x, tscale.y );
+	
+	var material = new THREE.MeshPhongMaterial(
+            {
+                map: tex,
+                ambient: 0xFFFFFF,
+                color: 0xdddddd,
+                specular: disp,
+                shininess: tshine,
+                shading: THREE.SmoothShading,
+                normalMap: norm,
+                metal: false,
+                skining: true,
+				fog: tfog,
+				lights: true
+            }
+        );
+	var mesh = new THREE.Mesh(geometry, material);
+	mesh.position.set(pos.x + scale.x/2, pos.y, pos.z + scale.z/2);
+	mesh.receiveShadow = true;
+	mesh.castShadow = true;
+	scene.add(mesh);
+	return mesh;
+}
+
+function createBoxBrush(scale, pos, texture, tfog)
+{
+	var geometry = new THREE.BoxGeometry(scale.x, scale.y, scale.z);
+	var tex = THREE.ImageUtils.loadTexture( 'content/textures/'+texture+'.jpg');
+	tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+	tex.repeat.set( scale.z/256, scale.y/256 );
+	tex.needsUpdate = true;
+	var disp = THREE.ImageUtils.loadTexture( 'content/textures/'+texture+'_disp.jpg');
+	disp.wrapS = disp.wrapT = THREE.RepeatWrapping;
+	disp.repeat.set( scale.z/256, scale.y/256 );
+	var norm = THREE.ImageUtils.loadTexture( 'content/textures/'+texture+'_norm.jpg');
+	norm.wrapS = norm.wrapT = THREE.RepeatWrapping;
+	norm.repeat.set( scale.z/256, scale.y/256 );
+	
+	var material = new THREE.MeshPhongMaterial(
+            {
+                map: tex,
+                ambient: 0xFFFFFF,
+                color: 0xdddddd,
+                specular: disp,
+                shininess: 25,
+                shading: THREE.SmoothShading,
+                normalMap: norm,
+                metal: false,
+                skining: true,
+				fog: tfog,
+				lights: true
+            }
+        );
+	var mesh = new THREE.Mesh(geometry, material);
+	mesh.position.set(pos.x + scale.x/2, pos.y, pos.z + scale.z/2);
+	mesh.receiveShadow = true;
+	mesh.castShadow = true;
+	scene.add(mesh);
+	 return mesh;
+}
+
+
+	var tree;
+	var shack_stairs;
+	var modman;
+	var rendererStats;
+	var KEYBOARD;
+	var socket;
+	var NetworkPlyMgr;
+	var Chat;
+	var WorldEntityManager;
+function init(s) 
+{
+	socket = s;
+	container = document.createElement( 'div' );
+	document.body.appendChild( container );
+	renderer = new THREE.WebGLRenderer();
+	renderer.setSize( window.innerWidth, window.innerHeight );
+	container.appendChild( renderer.domElement );
+	scene = new THREE.Scene();
+	//KEYBOARD = new THREEx.KeyboardState();
+	camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 100000 );
+	Chat = new ChatManager();
+	Chat.load();
+	controls = new THREE.OrbitControls( camera, renderer.domElement );
+	controls.noZoom = false;
+	controls.noPan = true;
+	WorldEntityManager = new World_Entity_Manager();
+	ScriptedModels = [];
+	//renderer.shadowMapEnabled = true;
+	renderer.shadowMapSoft = true;
+
+	renderer.shadowCameraNear = 1;
+	renderer.shadowCameraFar = camera.far;
+	renderer.shadowCameraFov = 100;
+	renderer.shadowMapDarkness = 0.5;
+	renderer.shadowMapWidth = 1024;
+	renderer.shadowMapHeight = 1024;
+	
+		loadLand(0, new THREE.Vector3(0,0,0));	
+		
+		loadLand(1, new THREE.Vector3(10000,0,0));
+
+		/*loadLand(2, new THREE.Vector3(20000,0,0));
+
+		loadLand(10, new THREE.Vector3(0,0,10000));
+		loadLand(11, new THREE.Vector3(10000,0,10000));
+		loadLand(12, new THREE.Vector3(20000,0,10000));*/
+	modman = new ModelManager();
+	/*
+	var trees = [];
+	for(var i = 0; i<100; i++)
+	{
+		if(Math.random()*10 > 5)
+		{
+			trees[i] = new Model('tree_dead_1', false);
+		}
+		else
+		{
+			trees[i] = new Model('tree_dead_2', false);
+		}
+		trees[i].addToScene(new THREE.Vector3(Math.random()*10000,50,Math.random()*10000));
+	}
+	var grass = [];
+	for(var i = 0; i<100; i++)
+	{
+		if(Math.random()*10 > 5)
+		{
+			grass[i] = new Model('weed_ground_01', false);
+		}
+		else
+		{
+			grass[i] = new Model('weed_ground_01_small', false);
+		}
+		grass[i].addToScene(new THREE.Vector3(Math.random()*10000,50,Math.random()*10000));
+	}*/
+	
+	modman.Update();
+	
+	var directionalLight = new THREE.DirectionalLight( 0xBEB199, 2 );
+	directionalLight.position.set( -1000, 5000, -1000 );
+	directionalLight.target.position.set(5000,0,5000);
+	directionalLight.castShadow = true;
+	directionalLight.shadowMapWidth = directionalLight.shadowMapHeight = 1048;
+	directionalLight.shadowCameraVisible = true;
+	directionalLight.shadowCameraLeft = -5000;
+	directionalLight.shadowCameraRight = 5000;
+	directionalLight.shadowCameraTop = 5000;
+	directionalLight.shadowCameraBottom = -5000;
+	directionalLight.shadowCameraFar = 15000;
+	directionalLight.shadowDarkness = 0.25;
+	scene.add( directionalLight );
+	
+	
+	
+	glS = new glStats();
+    tS = new threeStats( renderer );
+
+    rS = new rStats( {
+        values: {
+            frame: { caption: 'Total frame time (ms)', over: 16 },
+            fps: { caption: 'Framerate (FPS)', below: 59 },
+            calls: { caption: 'Calls (three.js)', over: 3000 },
+            raf: { caption: 'Time since last rAF (ms)', over: 18 },
+            rstats: { caption: 'rStats update (ms)' }
+        },
+        groups: [
+            { caption: 'Framerate', values: [ 'fps', 'raf' ] },
+            { caption: 'Frame Budget', values: [ 'frame', 'texture', 'setup', 'render' ] }
+        ],
+        plugins: [
+            tS,
+            glS
+        ]
+    } );
+	rendererStats = new THREEx.RendererStats();
+	rendererStats.domElement.style.position = 'absolute';
+	rendererStats.domElement.style.right = '0px';
+	rendererStats.domElement.style.top   = '0px';
+	document.body.appendChild( rendererStats.domElement );
+	
+	scene.fog = new THREE.Fog(0x2D2200, 11250, 15000);
+	
+	window.addEventListener( 'resize', onWindowResize, false );
+	
+	var m = new Model("factory",10000,-100,2000,500,null,1);
+	clock = new THREE.Clock();
+	animate();
+	
+	LocalPly = new LocalPlayer();
+	initialised = true;
+	socket.emit('ClientLoaded');
+	
+	socket.on('LoadPly', function(x,y,z)
+	{
+		NetworkPlyMgr = new NetworkPlayerManager();
+		NetworkPlyMgr.load();
+		LocalPly.load(x,y,z);
+	});
+	
+	socket.on('LoadNetworkPlayers', function(NetPlys)
+	{
+		console.error("Received "+NetPlys.length+" net players...");
+		for(var i = 0; i<NetPlys.length; i++)
+		{
+			console.error(NetPlys[i].name);
+			NetworkPlyMgr.createPlayer(NetPlys[i]);
+		}
+	});
+	
+	socket.on('test', function(str)
+	{
+		console.log(str);
+	});
+	
+	socket.on('NetMoveTo', function(x,y,z,npid)
+	{
+		console.error("Player ("+npid+") moved...");
+		var nply = NetworkPlyMgr.getPlayerByID(npid)
+		if(nply)
+		{
+			nply.SetTarget(new THREE.Vector3(x,y,z));
+		}
+		else
+		{
+			console.error("Player with ID("+npid+") does not exist!\n    Connected players:");
+			NetworkPlyMgr.NetPlyArr.forEach(function(v,i,a)
+			{
+				console.error("    - "+v.name+"    ("+v.pid+")");
+			});
+		}
+	});
+	
+	socket.on('PlyChat',function(name,text)
+	{	
+		if(name && text && name.length>0 && text.length>0)
+		{
+			Chat.AddMessage(name+": ",text);
+		}
+	});
+	
+	socket.on('NetPlyDisconnect',function(pid)
+	{
+		NetworkPlyMgr.removePlayer(pid);
+	});
+}
+
+function SendChatMessage()
+{
+	var text = chat.elements['chatinput'].value;
+	if(text && text.length>0 && socket)
+	{
+		socket.emit('chatinput', text);
+		chat.elements['chatinput'].value = "";
+	}
+}
+
+function onWindowResize() 
+{
+	camera.aspect = window.innerWidth / window.innerHeight;
+	camera.updateProjectionMatrix();
+
+	renderer.setSize( window.innerWidth, window.innerHeight );
+}
+
+var ScriptedModels;
+
+var loaded = false;
+var interval = 0;
+var modManInterval = 5;
+      var clock;
+function animate() 
+{	
+	rS( 'frame' ).start();
+    rS( 'FPS' ).frame();
+    rS( 'rAF' ).tick();
+	
+	rS('requestAnimationFrame').start();
+	requestAnimationFrame( animate );
+	rS('requestAnimationFrame').end();
+	THREE.AnimationHandler.update(clock.getDelta()*100);
+	
+	if(LocalPly && LocalPly.loaded)
+	{
+		controls.update();
+		camera.updateProjectionMatrix(); 
+		LocalPly.update();
+	}
+	if(NetworkPlyMgr && NetworkPlyMgr.NetPlyArr)
+	{
+		NetworkPlyMgr.NetPlyArr.forEach(function(v,i,a)
+		{
+			if(v && v.loaded && v.pid != -1)
+			{
+				v.update();
+			}
+		});
+	}
+	
+	
+	rS('ModelManager').start();
+	interval++;
+	if(interval>modManInterval)
+	{
+		interval = 0;
+		modman.Update();
+	}
+	rS('ModelManager').end();
+	
+	rS('Scripted Models').start();
+		ScriptedModels.forEach
+		(
+			function(v,i,a)
+			{
+				if(v.added) { v.Update(); }
+			}
+		);
+	rS('Scripted Models').end();
+	
+	rS('LandLoaded?').start();
+	loaded = true;
+	for(var i = 0; i<99; i++)
+	{
+		if(TerrainSlices[i].loaded === 'loading')
+		{
+			loaded = false;
+		}
+	}
+	rS('LandLoaded?').end();
+	
+	if(loaded && modman.QeueudModelsArr.length === 0 && controls.enalbed)
+	{
+		
+		rS('triggers').start();
+		for(var i = 0;i<triggers.length;i++)
+		{
+			triggers[i].Update();	
+		}
+		rS('triggers').end();
+		
+		rS( 'render' ).start();
+		rS( 'render' ).end();
+	}
+	
+		render();
+    rS( 'frame' ).end();
+    rS().update();
+	rendererStats.update(renderer);
+}
+
+function render() 
+{
+	renderer.render( scene, camera );
+}
+
+</script>
+</div>
+
+<div id="Login">
+	<form name="LoginForm">
+		<input type="text" name="usrn"><br>
+		<input type="text" name="pswd"><br>
+		<input type="button" value="Login" onclick="AttemptLogin()"><br>
+	</form>
+
+	<script src="/socket.io/socket.io.js"></script>
+	<script type="text/javascript">
+		var socket = io();
+		
+		function AttemptLogin()
+		{
+			var username = document.LoginForm.usrn.value;
+			var password = document.LoginForm.pswd.value;
+			
+			socket.emit('Login', username, password);
+		}
+		
+		socket.on('gameClient', function()
+		{
+			document.LoginForm.style.display = "none";
+			init(socket);
+		});
+	</script>
+</div>
+
+
+</body>
+</html>
