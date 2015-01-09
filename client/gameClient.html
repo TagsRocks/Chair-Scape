@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html>
-<title>TurdScape</title>
+<title>ChairScape</title>
 <head>
 
 
 
 <style>
 	body {
-		background-color: #ffffff;
+		background-color:rgba(55,55,55,255);
 		margin: 0;
 		overflow: hidden;
 		font-family: arial;
@@ -143,11 +143,54 @@
 		background-color:rgba(0,0,0,0.5);
 		color:#FFFFFF;
 	}
-	
+	LoginDiv {
+		position:absolute;
+		background-color:rgba(255,0,0,255);
+		height:100%;
+		width:100%;
+		left:50%;
+		bottom:50%;
+	}
+	form.LoginForm {
+		position:absolute;
+		height:10%;
+		width:25%;
+		left:35%;
+		top:30%;
+		font-size:40px;
+		color:#FFFFFF;
+	}
+	input.Username {
+		border:3px solid #FFFFFF;
+		height:80%;
+		width:80%;
+		font-size:70px;
+	}
+	input.Username, textarea {
+		background-color:rgba(64,0,0,255);
+		color:rgba(255,255,255,155);
+	}
+	input.Password {
+		border:3px solid #FFFFFF;
+		height:80%;
+		width:80%;
+		font-size:70px;
+	}
+	input.Password, textarea {
+		background-color:rgba(64,0,0,255);
+		color:rgba(255,255,255,155);
+	}
+	input.LoginButton {
+		width:50%;
+		height:50%;
+		background-color:rgba(0,0,0,0.5);
+		color:rgba(255,255,255,255);
+		font-size:30px;
+	}
 </style>
 
 
-<div id ="inventorydiv">
+<div id ="inventorydiv" style="display:none;">
 	<select id="inventorylistbox" name="inventorybox" class="InventoryMain" size="10">
 		<option value="slot1"></option>
 		<option value="slot2"></option>
@@ -160,7 +203,7 @@
 		<option value="slot9"></option>
 		<option value="slot10"></option>
 	</select>
-	<button type="button" class="InvDrpBtn" onclick="LocalPly.inventory.dropSelected();">Drop</button>
+	<button type="button" id="InvDrpBtn" class="InvDrpBtn" onclick="LocalPly.inventory.dropSelected();">Drop</button>
 </div>
 
 
@@ -194,7 +237,7 @@
 	</form>
 </div>
 
-<div id="rightclick">
+<div id="rightclick" style="display:none;">
 	<table id="RightClickTable" class="RClickBox">
 		<tr>
 			<td name="action1" class="RClickAction" onclick="LocalPly.rightclick.Options[0].Action();">Action1</td>
@@ -555,6 +598,7 @@ function init(s)
 		NetworkPlyMgr = new NetworkPlayerManager();
 		NetworkPlyMgr.load();
 		LocalPly.load(x,y,z);
+		Chat.AddMessage("","<b>Welcome to ChairScape lel.</b>");
 	});
 	
 	socket.on('LoadNetworkPlayers', function(NetPlys)
@@ -715,11 +759,11 @@ function render()
 </script>
 </div>
 
-<div id="Login">
-	<form name="LoginForm">
-		<input type="text" name="usrn"><br>
-		<input type="text" name="pswd"><br>
-		<input type="button" value="Login" onclick="AttemptLogin()"><br>
+<div class="LoginDiv">
+	<form name="LoginForm" class="LoginForm">
+		Username:<input type="text" class="Username" name="usrn"><br>
+		Password:<input type="text" class="Password" name="pswd"><br>
+		<input type="button" class="LoginButton" value="Login" onclick="AttemptLogin()"><br>
 	</form>
 
 	<script src="/socket.io/socket.io.js"></script>

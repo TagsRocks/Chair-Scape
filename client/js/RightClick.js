@@ -43,12 +43,14 @@ function RightClickMenuOption(b)
 	
 	this.Show = function()
 	{
+		rightclick.style.display = "";
 		this.Hidden = false;
 		this.setText(this.ActionText);
 	}
 	
 	this.Hide = function()
 	{
+		rightclick.style.display = "none";
 		this.Hidden = true;
 		this.Base.innerHTML = "";
 	}
@@ -70,6 +72,7 @@ function RightClickMenu()
 	
 	this.load = function()
 	{
+		rightclick.style.display = "";
 		var blockContextMenu = function (evt) {
 			evt.preventDefault();
 		};

@@ -22,7 +22,7 @@ function Inventory()
 		this.items = new Array();
 		this.loaded = true;
 		this.inventory_ui = document.getElementById("inventorylistbox");
-		
+		inventorydiv.style.display = "";
 		this.createNetEvents();
 	}
 	
