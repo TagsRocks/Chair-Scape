@@ -10,10 +10,11 @@ var Trigger = (function()
 	this.parentSlice;
 	this.func;
 
-	function Trigger(dimensions,pos,func)
+	function Trigger(dimensions,pos,color,func)
 	{
 		var material = new THREE.MeshLambertMaterial( { transparent: true } );
 		material.opacity = 0.5;
+		material.color = color;
 		var cubegeo = new THREE.BoxGeometry(dimensions.x, dimensions.y, dimensions.z);
 
 		var cubem = new THREE.Mesh(cubegeo, material);
@@ -29,7 +30,8 @@ var Trigger = (function()
 		scene.add(cubem);
 
 		this.id = triggers.length;
-		this.area = cubem.clone();
+		this.area = dimensions;
+		this.position = pos;
 		this.func = func;
 		triggers.push(this);
 	};
@@ -49,16 +51,12 @@ Trigger.prototype.trigger = function()
 	}
 };
 
-this.Entered = false;
-
 Trigger.prototype.OnEntered = function()
 {
 	this.Entered = true;
 	this.Exited = false;
 	this.trigger();
 };
-
-this.Exited = false;
 
 Trigger.prototype.OnExited = function()
 {
@@ -68,15 +66,20 @@ Trigger.prototype.OnExited = function()
 
 Trigger.prototype.Update = function()
 {
-	/*if(controls.getObject().position.x > this.area.position.x - this.area.width
-		&& controls.getObject().position.x < this.area.position.x + this.area.width
-	&& controls.getObject().position.y > this.area.position.y - this.area.height
-	&& controls.getObject().position.y < this.area.position.y + this.area.height
-	&& controls.getObject().position.z > this.area.position.z -(this.area.depth/2)
-	&& controls.getObject().position.z < this.area.position.z+(this.area.depth/2))
+	if(!LocalPly) { return; }
+	
+	if(LocalPly.position.x > this.position.x - this.area.x
+	&& LocalPly.position.x < this.position.x + this.area.x
+	//&& LocalPly.position.y > this.area.position.y - this.area.height
+	//&& LocalPly.position.y < this.area.position.y + this.area.height
+	&& LocalPly.position.z > this.position.z -(this.area.z/2)
+	&& LocalPly.position.z < this.position.z +(this.area.z/2))
 	{
-		if(!this.Entered) { this.OnEntered(); 
-		console.log("le");}
+		if(!this.Entered) 
+		{ 
+			this.OnEntered(); 
+			console.log("le");
+		}
 	}
 	else
 	{
@@ -84,5 +87,5 @@ Trigger.prototype.Update = function()
 		{
 			this.OnExited();
 		}
-	}*/
+	}
 };

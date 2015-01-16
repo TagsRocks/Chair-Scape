@@ -45,6 +45,7 @@ function LocalPlayer()
 		{
 			this.model.lookAt(this.lookvecmodel.position);
 			this.model.translateZ( 5 );
+			this.position = this.model.position;
 			//this.model.rotation.x = 0;
 			//this.model.rotation.z = 0;
 			if(this.model.position.distanceTo(this.lookvector) < 75)

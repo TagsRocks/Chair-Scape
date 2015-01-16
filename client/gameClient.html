@@ -352,7 +352,7 @@ var ext = '.js';
 var landmodels = '/client/content/models/land/land';
 
 var TerrainSlices = [];
-for(var i = 0;i<99;i++) { TerrainSlices[i] = new TerrainSlice(); TerrainSlices[i].loaded = false; }
+//for(var i = 0;i<99;i++) { TerrainSlices[i] = new TerrainSlice(); TerrainSlices[i].loaded = false; }
 var Land = [];
 var LandLoaded = [];
 function loadScript(url, callback){
@@ -720,32 +720,17 @@ function animate()
 		);
 	rS('Scripted Models').end();
 	
-	rS('LandLoaded?').start();
-	loaded = true;
-	for(var i = 0; i<99; i++)
-	{
-		if(TerrainSlices[i].loaded === 'loading')
+		rS('TerrainSlices').start();
+		TerrainSlices.forEach(function(v,i,a)
 		{
-			loaded = false;
-		}
-	}
-	rS('LandLoaded?').end();
-	
-	if(loaded && modman.QeueudModelsArr.length === 0 && controls.enalbed)
-	{
-		
-		rS('triggers').start();
-		for(var i = 0;i<triggers.length;i++)
-		{
-			triggers[i].Update();	
-		}
-		rS('triggers').end();
+			v.Update();
+		});
+		rS('TerrainSlices').end();
 		
 		rS( 'render' ).start();
-		rS( 'render' ).end();
-	}
-	
 		render();
+		rS( 'render' ).end();
+	
     rS( 'frame' ).end();
     rS().update();
 	rendererStats.update(renderer);

@@ -6,17 +6,65 @@ var TerrainSlice = (function()
 	this.position;
 	this.material;
 	
-	this.mapTriggers = [];
+	this.mapTriggers;
 	
-	function TerrainSlice()
+	function TerrainSlice(id,pos)
 	{
-	
+		console.log("Creating Land Object ["+id+",("+pos.x+","+pos.y+","+pos.z+")]");
+		this.id = id;
+		this.createLandTriggers(pos);
 	}
 	
 	return TerrainSlice;
 })();
 
+TerrainSlice.prototype.createLandTriggers = function(pos)
+{
+	this.mapTriggers = new Array();
+	
+	console.log("Creating Land["+this.id+"] Trigger at...");
+	console.log(pos);
+	
+	this.mapTriggers[0] = new Trigger
+	(
+		new THREE.Vector3(100,2000,10000),
+		new THREE.Vector3(pos.x - 4950, pos.y + 100, pos.z),
+		new THREE.Color("rgb(255,0,0)"),
+		(function() { loadLand(this.id - 1, this.position - new THREE.Vector3(10000,0,0)); })
+	);
+	
+	this.mapTriggers[1] = new Trigger
+	(
+		new THREE.Vector3(10000,2000,100),
+		new THREE.Vector3(pos.x, pos.y + 100, pos.z - 4950),
+		new THREE.Color("rgb(0,255,0)"),
+		(function() { console.log("func trig test"); })
+	);
+	
+	this.mapTriggers[2] = new Trigger
+	(
+		new THREE.Vector3(100,2000,10000),
+		new THREE.Vector3(pos.x + 4950, pos.y + 100, pos.z),
+		new THREE.Color("rgb(0,0,255)"),
+		(function() { console.log("func trig test"); })
+	);
+	
+	this.mapTriggers[3] = new Trigger
+	(
+		new THREE.Vector3(10000,2000,100),
+		new THREE.Vector3(pos.x, pos.y + 100, pos.z + 4950),
+		new THREE.Color("rgb(255,255,0)"),
+		(function() { console.log("func trig test"); })
+	);
+};
 
+TerrainSlice.prototype.Update = function()
+{
+	this.mapTriggers.forEach(function(v,i,a)
+	{
+		v.Update();
+	});
+};
 
 
 
@@ -24,20 +72,12 @@ var TerrainSlice = (function()
 
 function loadLand(landx,pos)
 {
+	if(TerrainSlices[landx]) { return; }
 	//CLog('loading: '+landmodels+landx+ext);
-	if(typeof TerrainSlices[landx] === "undefined") 
-	{
-		return;
-	}
-	if(TerrainSlices[landx].loaded===true) 
-	{ 
-		return; 
-	}
+	TerrainSlices[landx] = new TerrainSlice(landx,pos);
 	TerrainSlices[landx].loaded = 'loading';
 	var id = landx;
 	
-	TerrainSlices[id] = new TerrainSlice();
-	TerrainSlices[id].id = id;
 	TerrainSlices[id].position = new THREE.Vector3();
 	TerrainSlices[id].position.x += pos.x;
 	TerrainSlices[id].position.y += pos.y;
