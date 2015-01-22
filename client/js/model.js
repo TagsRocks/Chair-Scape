@@ -2,29 +2,42 @@ var Model = (function()
 {
 	this.Mesh;
 	this.geometry;
+	this.Animations;
 	this.materials;
 	this.position;
-	this.added = false;
-	this.collision = false;
 	this.scale = 100;
-	this.func = function() { console.log('no script added') };
-	this.run = false;
-	this.scripted = false;
 	this.name = "undefined model";
 	
+	this.run = false;
+	this.added = false;
+	this.collision = false;
+	
+	this.initFunc;
+	this.updateFunc;
+	
 	// rewrite this to be self managing i guess
-	function Model(path,posx,posy,posz,scl,func,uid)
+	function Model(path,posx,posy,posz,scl,uid)
 	{
 		this.name = path;
 		this.collision = true;
+		this.Animations = new Array();
 		this.position = new THREE.Vector3(posx,posy,posz);
 		this.scale = scl;
 		
-		if(func) { func(this); }
 		if(uid) { this.uid = uid; }
 		if(path) { modman.addWhenReady(this); }
  	};
 	
+	this.initFunc = function()
+	{
+		console.log("No initFunc added to model");
+	}
+	
+	this.updateFunc = function()
+	{
+		console.log("No updateFunc added to model");
+	}
+		
 	return Model;
 })();
 	
@@ -43,11 +56,12 @@ var Model = (function()
 		this.Mesh.castShadow = true;
 		this.Mesh.receiveShadow = true;
 		this.Mesh.model = this;
-		//console.log('Adding model mesh['+this.name+']');
-		scene.add(this.Mesh);
-		if(this.collision) { Land.push(this.Mesh); }
+		
+		this.Animations = this.Mesh.geometry.animations; // finish this shit later
+		
+		//if(this.collision) { Land.push(this.Mesh); }
 		this.added = true;
-		console.log(this);
+		this.initFunc();
 	};
 	
 	Model.prototype.ToggleRun = function()
@@ -60,11 +74,8 @@ var Model = (function()
 	
 	Model.prototype.Update = function()
 	{
-		if(this.scripted)
+		if(this.run)
 		{
-			if(this.run && this.func)
-			{
-				this.func();
-			}
+			this.updateFunc();
 		}
 	};

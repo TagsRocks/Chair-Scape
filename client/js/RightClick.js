@@ -91,6 +91,21 @@ function RightClickMenu()
 		}
 		this.Base.setPos(50,50);
 	}
+	this.Hide = function()
+	{
+		this.Options.forEach(function(v,i,a)
+		{
+			v.Hide();
+		});
+	}
+	
+	this.Show = function()
+	{
+		this.Options.forEach(function(v,i,a)
+		{
+			v.Show();
+		});
+	};
 	
 	this.open = function(intersect,x,y)
 	{
@@ -100,20 +115,22 @@ function RightClickMenu()
 		this.Base.setPos(x,y);
 		console.log(this.Base.getPos());
 		
-		if(intersect.object.model.Actions && intersect.object.model.Functions) 
+		if(intersect.object.model instanceof Model) 
 		{ 
+			console.log(intersect.object.model.Actions);
 			self.selectedWItem = intersect.object.model.uid;
 			intersect.object.model.Actions.forEach(function(v,i,a)
 			{
-				if(v && !(v===""))
+				if(v)
 				{
 					self.Options[i].setText(v);
-				} else { self.Options[i].Hide(); }
+				}
 			});
 			intersect.object.model.Functions.forEach(function(v,i,a)
 			{
 				self.Options[i].Action = v;
 			});
 		}
+		this.Show();
 	}
 }

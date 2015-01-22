@@ -252,7 +252,7 @@
 			<td name="action4" class="RClickAction" onclick="LocalPly.rightclick.Options[3].Action();">Action4</td>
 		</tr>
 		<tr>
-			<td name="cancel" class="RClickAction">Cancel</td>
+			<td name="cancel" class="RClickAction" onclick="LocalPly.rightclick.Hide();">Cancel</td>
 		</tr>
 	</table>
 </div>
@@ -310,6 +310,7 @@ void main(void)
 <script src="/client/js/TerrainSlice.js"></script>
 <script src="/client/js/ModelManager.js"></script>
 <script src="/client/js/model.js"></script>
+<script src="/client/content/models/s_ents/windmill_mills_01/windmill.js"></script>
 <script src="/client/js/trigger.js"></script>
 <script src="/client/js/World_Items_Manager.js"></script>
 <script src="/client/js/Inventory.js"></script>
@@ -471,6 +472,8 @@ function createBoxBrush(scale, pos, texture, tfog)
 	var NetworkPlyMgr;
 	var Chat;
 	var WorldEntityManager;
+	
+	var w1;
 function init(s) 
 {
 	socket = s;
@@ -488,7 +491,7 @@ function init(s)
 	controls.noZoom = false;
 	controls.noPan = true;
 	WorldEntityManager = new World_Entity_Manager();
-	ScriptedModels = [];
+	
 	//renderer.shadowMapEnabled = true;
 	renderer.shadowMapSoft = true;
 
@@ -585,7 +588,10 @@ function init(s)
 	
 	window.addEventListener( 'resize', onWindowResize, false );
 	
-	var m = new Model("factory",10000,-100,2000,500,null,1);
+	//var m = new Model("factory",10000,-100,2000,500,null,1);
+	
+	w1 = new Windmill(new THREE.Vector3(2000,200,2000));
+	
 	clock = new THREE.Clock();
 	animate();
 	
@@ -709,16 +715,6 @@ function animate()
 		modman.Update();
 	}
 	rS('ModelManager').end();
-	
-	rS('Scripted Models').start();
-		ScriptedModels.forEach
-		(
-			function(v,i,a)
-			{
-				if(v.added) { v.Update(); }
-			}
-		);
-	rS('Scripted Models').end();
 	
 		rS('TerrainSlices').start();
 		TerrainSlices.forEach(function(v,i,a)
